@@ -15,10 +15,11 @@ class AddTaskDto {
 }
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], AddTaskDto.prototype, "name", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsInt)(),
     __metadata("design:type", Number)
 ], AddTaskDto.prototype, "seq_num", void 0);
 exports.AddTaskDto = AddTaskDto;

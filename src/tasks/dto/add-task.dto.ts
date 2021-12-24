@@ -1,9 +1,10 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 
 export class AddTaskDto {
     @IsNotEmpty()
+    @IsString()
     name: string;
 
-    @IsNotEmpty()
+    @IsInt()
     seq_num: number;
 }

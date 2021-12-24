@@ -34,7 +34,12 @@ let TasksService = class TasksService {
         return tasks;
     }
     getTaskById(id) {
-        return this.tasks.find((task) => task.id === id);
+        const found = this.tasks.find((task) => task.id === id);
+        if (!found) {
+            throw new common_1.NotFoundException(`Task with ID "${id}" not found`);
+        }
+        else
+            return found;
     }
     addTask(addTaskDto) {
         const { name, seq_num } = addTaskDto;
@@ -48,11 +53,15 @@ let TasksService = class TasksService {
         return task;
     }
     deleteTask(id) {
+        const found = this.getTaskById(id);
         this.tasks = this.tasks.filter((task) => task.id !== id);
     }
     updateTask(id, updateTaskDto) {
         const { name, seq_num } = updateTaskDto;
         const idx = this.tasks.findIndex((task) => task.id === id);
+        if (idx === -1) {
+            throw new common_1.NotFoundException(`Task with ID "${id}" not found`);
+        }
         this.tasks[idx].name = name;
         this.tasks[idx].seq_num = seq_num;
         return this.tasks[idx];
