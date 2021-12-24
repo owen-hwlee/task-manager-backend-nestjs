@@ -68,8 +68,15 @@ export class TasksService {
     }
 
     finishTask(id: string): Task {
+        function sendEmail() {
+            
+        }
+
         const idx: number = this.tasks.findIndex((task: Task) => task.id === id);
         this.tasks[idx].done = true;
+
+        sendEmail();
+
         return this.tasks[idx];
     }
 }
