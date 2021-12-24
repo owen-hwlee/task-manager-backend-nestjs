@@ -16,7 +16,28 @@ let TasksService = class TasksService {
     getAllTasks() {
         return this.tasks;
     }
-    addTask(name, seq_num) {
+    getTasksWithFilters(filterDto) {
+        const { done, search } = filterDto;
+        let tasks = this.getAllTasks();
+        if (done) {
+            tasks = tasks.filter((task) => task.done === done);
+        }
+        if (search) {
+            tasks = tasks.filter((task) => {
+                if (task.name.toLowerCase().includes(search)) {
+                    return true;
+                }
+                else
+                    return false;
+            });
+        }
+        return tasks;
+    }
+    getTaskById(id) {
+        return this.tasks.find((task) => task.id === id);
+    }
+    addTask(addTaskDto) {
+        const { name, seq_num } = addTaskDto;
         const task = {
             id: (0, uuid_1.v4)(),
             name,
@@ -25,6 +46,21 @@ let TasksService = class TasksService {
         };
         this.tasks.push(task);
         return task;
+    }
+    deleteTask(id) {
+        this.tasks = this.tasks.filter((task) => task.id !== id);
+    }
+    updateTask(id, updateTaskDto) {
+        const { name, seq_num } = updateTaskDto;
+        const idx = this.tasks.findIndex((task) => task.id === id);
+        this.tasks[idx].name = name;
+        this.tasks[idx].seq_num = seq_num;
+        return this.tasks[idx];
+    }
+    finishTask(id) {
+        const idx = this.tasks.findIndex((task) => task.id === id);
+        this.tasks[idx].done = true;
+        return this.tasks[idx];
     }
 };
 TasksService = __decorate([

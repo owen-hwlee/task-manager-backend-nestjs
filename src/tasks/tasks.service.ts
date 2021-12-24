@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Task } from './task.model';
 import { v4 as uuid_v4 } from 'uuid';
+import { AddTaskDto } from './dto/add-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
+import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 
 
 @Injectable()
@@ -11,7 +14,28 @@ export class TasksService {
         return this.tasks;
     }
 
-    addTask(name: string, seq_num: number): Task {
+    getTasksWithFilters(filterDto: GetTasksFilterDto): Task[] {
+        const { done, search } = filterDto;
+        let tasks = this.getAllTasks();
+        if (done) {
+            tasks = tasks.filter((task: Task) => task.done === done);
+        }
+        if (search) {
+            tasks = tasks.filter((task: Task) => {
+                if (task.name.toLowerCase().includes(search)) {
+                    return true;
+                } else return false;
+            })
+        }
+        return tasks;
+    }
+
+    getTaskById(id: string): Task {
+        return this.tasks.find((task: Task) => task.id === id);
+    }
+
+    addTask(addTaskDto: AddTaskDto): Task {
+        const { name, seq_num } = addTaskDto;
         const task: Task = {
             id: uuid_v4(),
             name,
@@ -21,5 +45,24 @@ export class TasksService {
 
         this.tasks.push(task);
         return task;
+    }
+
+    deleteTask(id: string): void {
+        this.tasks = this.tasks.filter((task: Task) => task.id !== id);
+    }
+
+    updateTask(id: string, updateTaskDto: UpdateTaskDto): Task {
+        const { name, seq_num } = updateTaskDto;
+        const idx: number = this.tasks.findIndex((task: Task) => task.id === id);
+        this.tasks[idx].name = name;
+        this.tasks[idx].seq_num = seq_num;
+
+        return this.tasks[idx];
+    }
+
+    finishTask(id: string): Task {
+        const idx: number = this.tasks.findIndex((task: Task) => task.id === id);
+        this.tasks[idx].done = true;
+        return this.tasks[idx];
     }
 }
